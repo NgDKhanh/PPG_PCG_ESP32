@@ -5,14 +5,14 @@
 #include <esp_timer.h>
 #include <esp_vfs_fat.h>
 
+// Include I2S driver
+#include <driver/i2s.h>
+
 // Incluse SD card driver
 #include <sdcard.h>
 
 // Incluse MAX30102 driver
 #include "max30102.h"
-
-// Include I2S driver
-#include <driver/i2s.h>
 
 // Connections to INMP441 I2S microphone
 #define I2S_WS 25
@@ -24,10 +24,14 @@
 
 #define bufferCount 8
 #define bufferLen 64
-int16_t sBuffer[bufferLen];
+int16_t sBuffer16[bufferLen];
+int8_t sBuffer8[bufferLen * 2];
+
 
 int16_t buffer16[bufferLen] = {0};
 uint8_t buffer32[bufferLen * 4] = {0};
+
+uint16_t bufferTemp[16] = {0};
 
 // Buffer for data to save to SD card
 RingbufHandle_t buf_handle_max;
@@ -129,18 +133,22 @@ void max30102_test(void *pvParameters)
 
 // Set up I2S Processor configuration
 void i2s_install() {
-    const i2s_config_t i2s_config = {
-        .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX),
-        .sample_rate = 16000,
-        .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
-        .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
-        .communication_format = (I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
-        .intr_alloc_flags = 0,
-        .dma_buf_count = bufferCount,
-        .dma_buf_len = bufferLen,
-        .use_apll = false
-    };
-    i2s_driver_install(I2S_PORT, &i2s_config, 0, NULL);
+  // Set up I2S Processor configuration
+  i2s_config_t i2s_config = {
+    .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX),
+    .sample_rate = 4000, // or 44100 if you like
+    .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
+    .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // Ground the L/R pin on the INMP441.
+    .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_I2S),
+    .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
+    .dma_buf_count = bufferCount,
+    .dma_buf_len = bufferLen,
+    .use_apll = false,
+    .tx_desc_auto_clear = false,
+    .fixed_mclk = 0,
+  };
+
+  i2s_driver_install(I2S_PORT, &i2s_config, 0, NULL);
 }
 
 // Set I2S pin configuration
@@ -161,64 +169,82 @@ void i2s_setpin() {
  * @param pvParameters 
  */
 void readINMP441Task(void* parameter) {
+
     // Set up I2C
     i2s_install();
     i2s_setpin();
     i2s_start(I2S_PORT);
 
-    size_t bytesIn = 0;
-    uint8_t i;
+    size_t bytesRead = 0;
     char data_temp[8] = ""; 
 
+/*
     while (1) {
         vTaskDelay(1); // Feed for watchdog, if not watchdog timer will be triggered!
 
-        esp_err_t result = i2s_read(I2S_PORT, &sBuffer, sizeof(sBuffer), &bytesIn, portMAX_DELAY);
+        esp_err_t result = i2s_read(I2S_PORT, &sBuffer16, sizeof(sBuffer16), &bytesRead, portMAX_DELAY);
         //printf("%d\n", bytesIn);
-        int sampleRead = bytesIn / 2;
+        int sampleRead = bytesRead / 2;
         if (result == ESP_OK) {
-            for (i = 0; i < sampleRead; i++) {
-                printf("%d %d %d\n", 3000, -3000, sBuffer[i]);
+            for (uint8_t i = 0; i < sampleRead; i += 1) {
                 // memset(data_temp, 0, sizeof(data_temp));
-                // sprintf(data_temp, "\n%d", sBuffer[i]);
+                // sprintf(data_temp, "\n%d", sBuffer16[i]);
                 // strcat(data_inm, data_temp);
+                printf("%d %d %d\n", 3000, -3000, sBuffer16[i]);
             }
         }
         // xRingbufferSend(buf_handle_inm, data_inm, sizeof(data_inm), pdMS_TO_TICKS(5));
         // memset(data_inm, 0, sizeof(data_inm));
     }
-    // while (1)
+*/
+
+    while (1)
+    {
+        vTaskDelay(1); // Feed for watchdog, if not watchdog timer will be triggered!
+
+        i2s_read(I2S_PORT, &buffer32, sizeof(buffer32), &bytesRead, 100);
+        int samplesRead = bytesRead / 4;
+
+        for (uint8_t i = 0; i < samplesRead; i++) {
+            uint8_t mid = buffer32[i * 4 + 2];
+            uint8_t msb = buffer32[i * 4 + 3];
+            uint16_t raw = (((uint32_t)msb) << 8) + ((uint32_t)mid);
+            memcpy(&buffer16[i], &raw, sizeof(raw)); // Copy so sign bits aren't interfered with somehow.
+            printf("%d %d %d\n", 3000, -3000, buffer16[i]);
+        }
+    }
+    
+
+    // while(1) 
     // {
     //     vTaskDelay(1);
-    //     size_t bytesRead = 0;
-    //     i2s_read(I2S_NUM_0, &buffer32, sizeof(buffer32), &bytesRead, 100);
-    //     int samplesRead = bytesRead / 4;
-    //     for (int i=0; i<samplesRead; i++) {
-    //         uint8_t mid = buffer32[i * 4 + 2];
-    //         uint8_t msb = buffer32[i * 4 + 3];
-    //         uint16_t raw = (((uint32_t)msb) << 8) + ((uint32_t)mid);
-    //         memcpy(&buffer16[i], &raw, sizeof(raw)); // Copy so sign bits aren't interfered with somehow.
-    //         printf("%d %d %d\n", 3000, -3000, buffer16[i]);
-    //     }
+
+    //     i2s_read(I2S_PORT, &bufferTemp, sizeof(bufferTemp), &bytesRead, 100);
+
+    //     printf("----%d----\n", bufferTemp[3]);
     // }
 }
 
-
+/**
+ * @brief Receive data from 2 ring buffers and save them to SD card
+ * 
+ * @param parameter 
+ */
 void saveINMPAndMAXToSDTask(void *parameter) {
   while(1) {
     size_t item_size1;
     size_t item_size2;
 
-    // //Receive an item from no-split INMP441 ring buffer
-    // char *item1 = (char *)xRingbufferReceive(buf_handle_inm, &item_size1, 1);
+    //Receive an item from no-split INMP441 ring buffer
+    char *item1 = (char *)xRingbufferReceive(buf_handle_inm, &item_size1, 1);
 
-    // //Check received item
-    // if (item1 != NULL) {
-    //   //Return Item
-    //   // Serial.println("r");
-    //   vRingbufferReturnItem(buf_handle_inm, (void *)item1);
-    //   sdcard_writeDataToFile("test", item1);
-    // } 
+    //Check received item
+    if (item1 != NULL) {
+      //Return Item
+      // Serial.println("r");
+      vRingbufferReturnItem(buf_handle_inm, (void *)item1);
+      sdcard_writeDataToFile("test", item1);
+    } 
 
     //Receive an item from no-split MAX30102 ring buffer
     char *item2 = (char *)xRingbufferReceive(buf_handle_max, &item_size2, 1);
@@ -253,11 +279,11 @@ void app_main(void)
     buf_handle_inm = xRingbufferCreate(1028 * 5, RINGBUF_TYPE_NOSPLIT);
 
     // Set up I2C
-    ESP_ERROR_CHECK(i2cdev_init());    
+    ESP_ERROR_CHECK(i2cdev_init()); 
     */
     
     // Create tasks
     // xTaskCreatePinnedToCore(max30102_test, "max30102_test", configMINIMAL_STACK_SIZE * 3, NULL, 6, NULL, 0);
-    xTaskCreatePinnedToCore(readINMP441Task, "readINM411", configMINIMAL_STACK_SIZE * 5, NULL, 3, NULL, 0);
+    xTaskCreatePinnedToCore(readINMP441Task, "readINM411", configMINIMAL_STACK_SIZE * 5, NULL, 3, NULL, 1);
     // xTaskCreatePinnedToCore(saveINMPAndMAXToSDTask, "saveToSD", configMINIMAL_STACK_SIZE * 5, NULL, 5, NULL, 1);
 }
