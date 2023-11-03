@@ -1,0 +1,49 @@
+[0/1] Re-running CMake...
+-- Building ESP-IDF components for target esp32
+-- Project sdkconfig file /home/khanh/esp/PPG_PCG_ESP32/sdkconfig
+-- App "i2s_i2c_test" version: 0646245-dirty
+-- Adding linker script /home/khanh/esp/PPG_PCG_ESP32/build/esp-idf/esp_system/ld/memory.ld
+-- Adding linker script /home/khanh/esp/esp-idf/components/esp_system/ld/esp32/sections.ld.in
+-- Adding linker script /home/khanh/esp/esp-idf/components/esp_rom/esp32/ld/esp32.rom.ld
+-- Adding linker script /home/khanh/esp/esp-idf/components/esp_rom/esp32/ld/esp32.rom.api.ld
+-- Adding linker script /home/khanh/esp/esp-idf/components/esp_rom/esp32/ld/esp32.rom.libgcc.ld
+-- Adding linker script /home/khanh/esp/esp-idf/components/esp_rom/esp32/ld/esp32.rom.newlib-data.ld
+-- Adding linker script /home/khanh/esp/esp-idf/components/esp_rom/esp32/ld/esp32.rom.syscalls.ld
+-- Adding linker script /home/khanh/esp/esp-idf/components/esp_rom/esp32/ld/esp32.rom.newlib-funcs.ld
+-- Adding linker script /home/khanh/esp/esp-idf/components/soc/esp32/ld/esp32.peripherals.ld
+-- Components: FileManager MAX30102 app_trace app_update bootloader bootloader_support bt cmock console cxx driver efuse esp-tls esp_adc esp_app_format esp_common esp_eth esp_event esp_gdbstub esp_hid esp_http_client esp_http_server esp_https_ota esp_https_server esp_hw_support esp_idf_lib_helpers esp_lcd esp_local_ctrl esp_mm esp_netif esp_netif_stack esp_partition esp_phy esp_pm esp_psram esp_ringbuf esp_rom esp_system esp_timer esp_wifi espcoredump esptool_py fatfs freertos hal heap http_parser i2cdev idf_test ieee802154 json log lwip main mbedtls mqtt newlib nvs_flash openthread partition_table perfmon protobuf-c protocomm pthread sdmmc soc spi_flash spiffs tcp_transport ulp unity usb vfs wear_levelling wifi_provisioning wpa_supplicant xtensa
+-- Component paths: /home/khanh/esp/PPG_PCG_ESP32/component/FileManager /home/khanh/esp/PPG_PCG_ESP32/component/MAX30102 /home/khanh/esp/esp-idf/components/app_trace /home/khanh/esp/esp-idf/components/app_update /home/khanh/esp/esp-idf/components/bootloader /home/khanh/esp/esp-idf/components/bootloader_support /home/khanh/esp/esp-idf/components/bt /home/khanh/esp/esp-idf/components/cmock /home/khanh/esp/esp-idf/components/console /home/khanh/esp/esp-idf/components/cxx /home/khanh/esp/esp-idf/components/driver /home/khanh/esp/esp-idf/components/efuse /home/khanh/esp/esp-idf/components/esp-tls /home/khanh/esp/esp-idf/components/esp_adc /home/khanh/esp/esp-idf/components/esp_app_format /home/khanh/esp/esp-idf/components/esp_common /home/khanh/esp/esp-idf/components/esp_eth /home/khanh/esp/esp-idf/components/esp_event /home/khanh/esp/esp-idf/components/esp_gdbstub /home/khanh/esp/esp-idf/components/esp_hid /home/khanh/esp/esp-idf/components/esp_http_client /home/khanh/esp/esp-idf/components/esp_http_server /home/khanh/esp/esp-idf/components/esp_https_ota /home/khanh/esp/esp-idf/components/esp_https_server /home/khanh/esp/esp-idf/components/esp_hw_support /home/khanh/esp/PPG_PCG_ESP32/component/esp_idf_lib_helpers /home/khanh/esp/esp-idf/components/esp_lcd /home/khanh/esp/esp-idf/components/esp_local_ctrl /home/khanh/esp/esp-idf/components/esp_mm /home/khanh/esp/esp-idf/components/esp_netif /home/khanh/esp/esp-idf/components/esp_netif_stack /home/khanh/esp/esp-idf/components/esp_partition /home/khanh/esp/esp-idf/components/esp_phy /home/khanh/esp/esp-idf/components/esp_pm /home/khanh/esp/esp-idf/components/esp_psram /home/khanh/esp/esp-idf/components/esp_ringbuf /home/khanh/esp/esp-idf/components/esp_rom /home/khanh/esp/esp-idf/components/esp_system /home/khanh/esp/esp-idf/components/esp_timer /home/khanh/esp/esp-idf/components/esp_wifi /home/khanh/esp/esp-idf/components/espcoredump /home/khanh/esp/esp-idf/components/esptool_py /home/khanh/esp/esp-idf/components/fatfs /home/khanh/esp/esp-idf/components/freertos /home/khanh/esp/esp-idf/components/hal /home/khanh/esp/esp-idf/components/heap /home/khanh/esp/esp-idf/components/http_parser /home/khanh/esp/PPG_PCG_ESP32/component/i2cdev /home/khanh/esp/esp-idf/components/idf_test /home/khanh/esp/esp-idf/components/ieee802154 /home/khanh/esp/esp-idf/components/json /home/khanh/esp/esp-idf/components/log /home/khanh/esp/esp-idf/components/lwip /home/khanh/esp/PPG_PCG_ESP32/main /home/khanh/esp/esp-idf/components/mbedtls /home/khanh/esp/esp-idf/components/mqtt /home/khanh/esp/esp-idf/components/newlib /home/khanh/esp/esp-idf/components/nvs_flash /home/khanh/esp/esp-idf/components/openthread /home/khanh/esp/esp-idf/components/partition_table /home/khanh/esp/esp-idf/components/perfmon /home/khanh/esp/esp-idf/components/protobuf-c /home/khanh/esp/esp-idf/components/protocomm /home/khanh/esp/esp-idf/components/pthread /home/khanh/esp/esp-idf/components/sdmmc /home/khanh/esp/esp-idf/components/soc /home/khanh/esp/esp-idf/components/spi_flash /home/khanh/esp/esp-idf/components/spiffs /home/khanh/esp/esp-idf/components/tcp_transport /home/khanh/esp/esp-idf/components/ulp /home/khanh/esp/esp-idf/components/unity /home/khanh/esp/esp-idf/components/usb /home/khanh/esp/esp-idf/components/vfs /home/khanh/esp/esp-idf/components/wear_levelling /home/khanh/esp/esp-idf/components/wifi_provisioning /home/khanh/esp/esp-idf/components/wpa_supplicant /home/khanh/esp/esp-idf/components/xtensa
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/khanh/esp/PPG_PCG_ESP32/build
+[1/7] Performing build step for 'bootloader'
+[0/1] Re-running CMake...
+-- Building ESP-IDF components for target esp32
+-- Project sdkconfig file /home/khanh/esp/PPG_PCG_ESP32/sdkconfig
+Compiler supported targets: xtensa-esp32-elf
+
+-- Adding linker script /home/khanh/esp/esp-idf/components/soc/esp32/ld/esp32.peripherals.ld
+-- App "bootloader" version: v5.1-dev-3619-g57b6be22a7
+-- Adding linker script /home/khanh/esp/esp-idf/components/esp_rom/esp32/ld/esp32.rom.ld
+-- Adding linker script /home/khanh/esp/esp-idf/components/esp_rom/esp32/ld/esp32.rom.api.ld
+-- Adding linker script /home/khanh/esp/esp-idf/components/esp_rom/esp32/ld/esp32.rom.libgcc.ld
+-- Adding linker script /home/khanh/esp/esp-idf/components/esp_rom/esp32/ld/esp32.rom.newlib-funcs.ld
+-- Adding linker script /home/khanh/esp/esp-idf/components/bootloader/subproject/main/ld/esp32/bootloader.ld
+-- Adding linker script /home/khanh/esp/esp-idf/components/bootloader/subproject/main/ld/esp32/bootloader.rom.ld
+-- Components: bootloader bootloader_support efuse esp_app_format esp_common esp_hw_support esp_rom esp_system esptool_py freertos hal log main micro-ecc newlib partition_table soc spi_flash xtensa
+-- Component paths: /home/khanh/esp/esp-idf/components/bootloader /home/khanh/esp/esp-idf/components/bootloader_support /home/khanh/esp/esp-idf/components/efuse /home/khanh/esp/esp-idf/components/esp_app_format /home/khanh/esp/esp-idf/components/esp_common /home/khanh/esp/esp-idf/components/esp_hw_support /home/khanh/esp/esp-idf/components/esp_rom /home/khanh/esp/esp-idf/components/esp_system /home/khanh/esp/esp-idf/components/esptool_py /home/khanh/esp/esp-idf/components/freertos /home/khanh/esp/esp-idf/components/hal /home/khanh/esp/esp-idf/components/log /home/khanh/esp/esp-idf/components/bootloader/subproject/main /home/khanh/esp/esp-idf/components/bootloader/subproject/components/micro-ecc /home/khanh/esp/esp-idf/components/newlib /home/khanh/esp/esp-idf/components/partition_table /home/khanh/esp/esp-idf/components/soc /home/khanh/esp/esp-idf/components/spi_flash /home/khanh/esp/esp-idf/components/xtensa
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/khanh/esp/PPG_PCG_ESP32/build/bootloader
+[1/1] cd /home/khanh/esp/PPG_PCG_ESP32/build/bootloader/esp-idf/esptool_py && /home/khanh/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/khanh/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/khanh/esp/PPG_PCG_ESP32/build/bootloader/bootloader.bin
+Bootloader binary size 0x6740 bytes. 0x8c0 bytes (8%) free.
+[2/5] Generating ld/sections.ld
+[3/5] Linking CXX executable i2s_i2c_test.elf
+[4/5] Generating binary image from built executable
+esptool.py v4.5
+Creating esp32 image...
+Merged 2 ELF sections
+Successfully created esp32 image.
+Generated /home/khanh/esp/PPG_PCG_ESP32/build/i2s_i2c_test.bin
+[5/5] cd /home/khanh/esp/PPG_PCG_ESP32/build/esp-idf/esptool_py && /home/khanh/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/khanh/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/khanh/esp/PPG_PCG_ESP32/build/partition_table/partition-table.bin /home/khanh/esp/PPG_PCG_ESP32/build/i2s_i2c_test.bin
+i2s_i2c_test.bin binary size 0x4cc40 bytes. Smallest app partition is 0x100000 bytes. 0xb33c0 bytes (70%) free.

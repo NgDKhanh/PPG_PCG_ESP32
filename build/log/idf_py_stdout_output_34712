@@ -1,0 +1,72 @@
+[1/10] Performing build step for 'bootloader'
+[1/1] cd /home/khanh/esp/PPG_PCG_ESP32/build/bootloader/esp-idf/esptool_py && /home/khanh/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/khanh/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/khanh/esp/PPG_PCG_ESP32/build/bootloader/bootloader.bin
+Bootloader binary size 0x6740 bytes. 0x8c0 bytes (8%) free.
+[2/8] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/i2s_i2c_test.c.obj
+In file included from /home/khanh/esp/esp-idf/components/driver/deprecated/driver/i2s.h:23,
+                 from /home/khanh/esp/PPG_PCG_ESP32/main/i2s_i2c_test.c:10:
+/home/khanh/esp/esp-idf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+/home/khanh/esp/esp-idf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+/home/khanh/esp/PPG_PCG_ESP32/main/i2s_i2c_test.c: In function 'max30102_test':
+/home/khanh/esp/PPG_PCG_ESP32/main/i2s_i2c_test.c:57:26: warning: unused variable 'data' [-Wunused-variable]
+   57 |     struct max30102_data data;
+      |                          ^~~~
+[3/8] Linking C static library esp-idf/main/libmain.a
+[4/8] Generating ld/sections.ld
+[5/8] Linking CXX executable i2s_i2c_test.elf
+[6/8] Generating binary image from built executable
+esptool.py v4.5
+Creating esp32 image...
+Merged 2 ELF sections
+Successfully created esp32 image.
+Generated /home/khanh/esp/PPG_PCG_ESP32/build/i2s_i2c_test.bin
+[7/8] cd /home/khanh/esp/PPG_PCG_ESP32/build/esp-idf/esptool_py && /home/khanh/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/khanh/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/khanh/esp/PPG_PCG_ESP32/build/partition_table/partition-table.bin /home/khanh/esp/PPG_PCG_ESP32/build/i2s_i2c_test.bin
+i2s_i2c_test.bin binary size 0x4cbe0 bytes. Smallest app partition is 0x100000 bytes. 0xb3420 bytes (70%) free.
+[7/8] cd /home/khanh/esp/esp-idf/components/esptool_py && /usr/bin/cmake -D IDF_PATH=/home/khanh/esp/esp-idf -D "SERIAL_TOOL=/home/khanh/.espressif/python_env/idf5.1_py3.10_env/bin/python;;/home/khanh/esp/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/home/khanh/esp/PPG_PCG_ESP32/build -P /home/khanh/esp/esp-idf/components/esptool_py/run_serial_tool.cmake
+esptool esp32 -p /dev/ttyUSB0 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB 0x1000 bootloader/bootloader.bin 0x10000 i2s_i2c_test.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.5
+Serial port /dev/ttyUSB0
+Connecting.....
+Chip is ESP32-D0WDQ6-V3 (revision v3.0)
+Features: WiFi, BT, Dual Core, 240MHz, VRef calibration in efuse, Coding Scheme None
+WARNING: Detected crystal freq 41.01MHz is quite different to normalized freq 40MHz. Unsupported crystal in use?
+Crystal is 40MHz
+MAC: 78:21:84:8d:fa:f4
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00001000 to 0x00007fff...
+Flash will be erased from 0x00010000 to 0x0005cfff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+Compressed 26432 bytes to 16578...
+Writing at 0x00001000... (50 %)
+Writing at 0x0000763b... (100 %)
+Wrote 26432 bytes (16578 compressed) at 0x00001000 in 0.8 seconds (effective 259.5 kbit/s)...
+Hash of data verified.
+Compressed 314336 bytes to 174459...
+Writing at 0x00010000... (9 %)
+Writing at 0x0001cf87... (18 %)
+Writing at 0x00024006... (27 %)
+Writing at 0x00029814... (36 %)
+Writing at 0x0002f7c4... (45 %)
+Writing at 0x00035588... (54 %)
+Writing at 0x0003af89... (63 %)
+Writing at 0x00043e4d... (72 %)
+Writing at 0x0004d06f... (81 %)
+Writing at 0x00052f6e... (90 %)
+Writing at 0x00058b45... (100 %)
+Wrote 314336 bytes (174459 compressed) at 0x00010000 in 4.0 seconds (effective 626.0 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 103...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (103 compressed) at 0x00008000 in 0.1 seconds (effective 378.1 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...

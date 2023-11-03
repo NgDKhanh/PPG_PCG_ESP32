@@ -2,34 +2,34 @@
 	"sources" : 
 	[
 		{
-			"file" : "C:/Users/admin/esp/i2s_i2c_test/build/CMakeFiles/bootloader"
+			"file" : "/home/khanh/esp/PPG_PCG_ESP32/build/CMakeFiles/bootloader"
 		},
 		{
-			"file" : "C:/Users/admin/esp/i2s_i2c_test/build/CMakeFiles/bootloader.rule"
+			"file" : "/home/khanh/esp/PPG_PCG_ESP32/build/CMakeFiles/bootloader.rule"
 		},
 		{
-			"file" : "C:/Users/admin/esp/i2s_i2c_test/build/CMakeFiles/bootloader-complete.rule"
+			"file" : "/home/khanh/esp/PPG_PCG_ESP32/build/CMakeFiles/bootloader-complete.rule"
 		},
 		{
-			"file" : "C:/Users/admin/esp/i2s_i2c_test/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule"
+			"file" : "/home/khanh/esp/PPG_PCG_ESP32/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule"
 		},
 		{
-			"file" : "C:/Users/admin/esp/i2s_i2c_test/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule"
+			"file" : "/home/khanh/esp/PPG_PCG_ESP32/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule"
 		},
 		{
-			"file" : "C:/Users/admin/esp/i2s_i2c_test/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule"
+			"file" : "/home/khanh/esp/PPG_PCG_ESP32/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule"
 		},
 		{
-			"file" : "C:/Users/admin/esp/i2s_i2c_test/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule"
+			"file" : "/home/khanh/esp/PPG_PCG_ESP32/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule"
 		},
 		{
-			"file" : "C:/Users/admin/esp/i2s_i2c_test/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule"
+			"file" : "/home/khanh/esp/PPG_PCG_ESP32/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule"
 		},
 		{
-			"file" : "C:/Users/admin/esp/i2s_i2c_test/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule"
+			"file" : "/home/khanh/esp/PPG_PCG_ESP32/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule"
 		},
 		{
-			"file" : "C:/Users/admin/esp/i2s_i2c_test/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule"
+			"file" : "/home/khanh/esp/PPG_PCG_ESP32/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule"
 		}
 	],
 	"target" : 

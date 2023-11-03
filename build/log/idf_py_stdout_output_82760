@@ -1,0 +1,27 @@
+[1/9] Performing build step for 'bootloader'
+[1/1] cd /home/khanh/esp/PPG_PCG_ESP32/build/bootloader/esp-idf/esptool_py && /home/khanh/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/khanh/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/khanh/esp/PPG_PCG_ESP32/build/bootloader/bootloader.bin
+Bootloader binary size 0x6740 bytes. 0x8c0 bytes (8%) free.
+[2/7] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/i2s_i2c_test.c.obj
+In file included from /home/khanh/esp/esp-idf/components/driver/deprecated/driver/i2s.h:23,
+                 from /home/khanh/esp/PPG_PCG_ESP32/main/i2s_i2c_test.c:10:
+/home/khanh/esp/esp-idf/components/driver/deprecated/driver/adc.h:19:2: warning: #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively" [-Wcpp]
+   19 | #warning "legacy adc driver is deprecated, please migrate to use esp_adc/adc_oneshot.h and esp_adc/adc_continuous.h for oneshot mode and continuous mode drivers respectively"
+      |  ^~~~~~~
+/home/khanh/esp/esp-idf/components/driver/deprecated/driver/i2s.h:27:2: warning: #warning "This set of I2S APIs has been deprecated, please include 'driver/i2s_std.h', 'driver/i2s_pdm.h' or 'driver/i2s_tdm.h' instead. if you want to keep using the old APIs and ignore this warning, you can enable 'Suppress leagcy driver deprecated warning' option under 'I2S Configuration' menu in Kconfig" [-Wcpp]
+   27 | #warning "This set of I2S APIs has been deprecated, \
+      |  ^~~~~~~
+/home/khanh/esp/PPG_PCG_ESP32/main/i2s_i2c_test.c: In function 'max30102_test':
+/home/khanh/esp/PPG_PCG_ESP32/main/i2s_i2c_test.c:57:26: warning: unused variable 'data' [-Wunused-variable]
+   57 |     struct max30102_data data;
+      |                          ^~~~
+[3/7] Linking C static library esp-idf/main/libmain.a
+[4/7] Generating ld/sections.ld
+[5/7] Linking CXX executable i2s_i2c_test.elf
+[6/7] Generating binary image from built executable
+esptool.py v4.5
+Creating esp32 image...
+Merged 2 ELF sections
+Successfully created esp32 image.
+Generated /home/khanh/esp/PPG_PCG_ESP32/build/i2s_i2c_test.bin
+[7/7] cd /home/khanh/esp/PPG_PCG_ESP32/build/esp-idf/esptool_py && /home/khanh/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/khanh/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/khanh/esp/PPG_PCG_ESP32/build/partition_table/partition-table.bin /home/khanh/esp/PPG_PCG_ESP32/build/i2s_i2c_test.bin
+i2s_i2c_test.bin binary size 0x4cc40 bytes. Smallest app partition is 0x100000 bytes. 0xb33c0 bytes (70%) free.

@@ -4,6 +4,7 @@
 #include <string.h>
 #include <esp_timer.h>
 #include <esp_vfs_fat.h>
+#include <freertos/ringbuf.h>
 
 // Include I2S driver
 #include <driver/i2s.h>
@@ -38,7 +39,7 @@ RingbufHandle_t buf_handle_max;
 RingbufHandle_t buf_handle_inm;
 
 static char data_max[400] = "";
-static char data_inm[32 * 8] = "";
+static char data_inm[bufferLen * 8] = "";
 
 /**
  * @brief Read data from MAX30102 and send to ring buffer
@@ -139,7 +140,7 @@ void i2s_install() {
     .sample_rate = 4000, // or 44100 if you like
     .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
     .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // Ground the L/R pin on the INMP441.
-    .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_I2S),
+    .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S |I2S_COMM_FORMAT_I2S_MSB),
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
     .dma_buf_count = bufferCount,
     .dma_buf_len = bufferLen,
@@ -210,8 +211,17 @@ void readINMP441Task(void* parameter) {
             uint8_t msb = buffer32[i * 4 + 3];
             uint16_t raw = (((uint32_t)msb) << 8) + ((uint32_t)mid);
             memcpy(&buffer16[i], &raw, sizeof(raw)); // Copy so sign bits aren't interfered with somehow.
-            printf("%d %d %d\n", 3000, -3000, buffer16[i]);
+            // printf("%d %d %d\n", 3000, -3000, buffer16[i]);
+            
+            memset(data_temp, 0, sizeof(data_temp));
+            sprintf(data_temp, "\n%d", buffer16[i]);
+            strcat(data_inm, data_temp);
+            
         }
+        
+        xRingbufferSend(buf_handle_inm, data_inm, sizeof(data_inm), pdMS_TO_TICKS(5));
+        memset(data_inm, 0, sizeof(data_inm));
+        
     }
     
 
@@ -262,7 +272,6 @@ void saveINMPAndMAXToSDTask(void *parameter) {
 void app_main(void)
 {
     // Initialize SPI Bus
-    /*
     ESP_LOGI(__func__, "Initialize SD card with SPI interface.");
     esp_vfs_fat_mount_config_t mount_config_t = MOUNT_CONFIG_DEFAULT();
     spi_bus_config_t spi_bus_config_t = SPI_BUS_CONFIG_DEFAULT();
@@ -272,18 +281,17 @@ void app_main(void)
     slot_config.host_id = host_t.slot;
 
     sdmmc_card_t SDCARD;
-    ESP_ERROR_CHECK(sdcard_initialize(&mount_config_t, &SDCARD, &host_t, &spi_bus_config_t, &slot_config));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(sdcard_initialize(&mount_config_t, &SDCARD, &host_t, &spi_bus_config_t, &slot_config));
 
     // Initialise ring buffers
     buf_handle_max = xRingbufferCreate(1028 * 3, RINGBUF_TYPE_NOSPLIT);
     buf_handle_inm = xRingbufferCreate(1028 * 5, RINGBUF_TYPE_NOSPLIT);
 
     // Set up I2C
-    ESP_ERROR_CHECK(i2cdev_init()); 
-    */
+    // ESP_ERROR_CHECK(i2cdev_init()); 
     
     // Create tasks
-    // xTaskCreatePinnedToCore(max30102_test, "max30102_test", configMINIMAL_STACK_SIZE * 3, NULL, 6, NULL, 0);
-    xTaskCreatePinnedToCore(readINMP441Task, "readINM411", configMINIMAL_STACK_SIZE * 5, NULL, 3, NULL, 1);
-    // xTaskCreatePinnedToCore(saveINMPAndMAXToSDTask, "saveToSD", configMINIMAL_STACK_SIZE * 5, NULL, 5, NULL, 1);
+    // xTaskCreatePinnedToCore(max30102_test, "max30102_test", 1024 * 5, NULL, 6, NULL, 0);
+    xTaskCreatePinnedToCore(readINMP441Task, "readINM411", 1024 * 10, NULL, 3, NULL, 0);
+    xTaskCreatePinnedToCore(saveINMPAndMAXToSDTask, "saveToSD", 1024 * 5, NULL, 5, NULL, 1);
 }

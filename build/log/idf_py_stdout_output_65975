@@ -1,0 +1,5 @@
+[1/4] cd /home/khanh/esp/PPG_PCG_ESP32/build/esp-idf/esptool_py && /home/khanh/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/khanh/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/khanh/esp/PPG_PCG_ESP32/build/partition_table/partition-table.bin /home/khanh/esp/PPG_PCG_ESP32/build/i2s_i2c_test.bin
+i2s_i2c_test.bin binary size 0x2f980 bytes. Smallest app partition is 0x100000 bytes. 0xd0680 bytes (81%) free.
+[2/4] Performing build step for 'bootloader'
+[1/1] cd /home/khanh/esp/PPG_PCG_ESP32/build/bootloader/esp-idf/esptool_py && /home/khanh/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/khanh/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/khanh/esp/PPG_PCG_ESP32/build/bootloader/bootloader.bin
+Bootloader binary size 0x6740 bytes. 0x8c0 bytes (8%) free.
