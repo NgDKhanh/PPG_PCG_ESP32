@@ -272,6 +272,7 @@ void saveINMPAndMAXToSDTask(void *parameter) {
 void app_main(void)
 {
     // Initialize SPI Bus
+    
     ESP_LOGI(__func__, "Initialize SD card with SPI interface.");
     esp_vfs_fat_mount_config_t mount_config_t = MOUNT_CONFIG_DEFAULT();
     spi_bus_config_t spi_bus_config_t = SPI_BUS_CONFIG_DEFAULT();
@@ -288,10 +289,10 @@ void app_main(void)
     buf_handle_inm = xRingbufferCreate(1028 * 5, RINGBUF_TYPE_NOSPLIT);
 
     // Set up I2C
-    // ESP_ERROR_CHECK(i2cdev_init()); 
+    ESP_ERROR_CHECK(i2cdev_init()); 
     
     // Create tasks
-    // xTaskCreatePinnedToCore(max30102_test, "max30102_test", 1024 * 5, NULL, 6, NULL, 0);
+    xTaskCreatePinnedToCore(max30102_test, "max30102_test", 1024 * 5, NULL, 6, NULL, 0);
     xTaskCreatePinnedToCore(readINMP441Task, "readINM411", 1024 * 10, NULL, 3, NULL, 0);
     xTaskCreatePinnedToCore(saveINMPAndMAXToSDTask, "saveToSD", 1024 * 5, NULL, 5, NULL, 1);
 }
