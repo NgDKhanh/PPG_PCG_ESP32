@@ -23,23 +23,25 @@
 // Use I2S Processor 0
 #define I2S_PORT I2S_NUM_0
 
-#define bufferCount 8
-#define bufferLen 64
-int16_t sBuffer16[bufferLen];
-int8_t sBuffer8[bufferLen * 2];
+#define bufferCount 6
+#define bufferLen 32
+#define receiveBufferLen ((bufferLen * 32 / 8)  * bufferCount) 
 
-
-int16_t buffer16[bufferLen] = {0};
-uint8_t buffer32[bufferLen * 4] = {0};
-
-uint16_t bufferTemp[16] = {0};
+// Buffers to store data read from dma buffers
+int16_t buffer16[receiveBufferLen / 4] = {0};
+uint8_t buffer32[receiveBufferLen] = {0};
 
 // Buffer for data to save to SD card
 RingbufHandle_t buf_handle_max;
 RingbufHandle_t buf_handle_inm;
 
+// Data buffer to send to ringbuffer
 static char data_max[400] = "";
-static char data_inm[bufferLen * 8] = "";
+static char data_inm[receiveBufferLen / 4 * 6] = "";
+
+TaskHandle_t readMAXTask_handle = NULL;
+TaskHandle_t readINMTask_handle = NULL;
+TaskHandle_t saveToSDTask_handle = NULL;
 
 /**
  * @brief Read data from MAX30102 and send to ring buffer
@@ -70,9 +72,7 @@ void max30102_test(void *pvParameters)
         ESP_LOGE(__func__, "Init fail!");
     }
 
-    //uint64_t startTime = esp_timer_get_time() / 1000;
     uint16_t samplesTaken = 0;
-    //uint64_t startTime;
     char data_temp[16] = "";
     unsigned long red;
     unsigned long ir;
@@ -103,31 +103,6 @@ void max30102_test(void *pvParameters)
             memset(data_max, 0, sizeof(data_max));
         }
 
-        // uint16_t samplesTaken = 0;
-        // uint64_t startTime = esp_timer_get_time();
-
-        // while(samplesTaken < 10)
-        // {
-        //     max30102_check(&record, &dev); //Check the sensor, read up to 3 samples
-        //     while (max30102_available(&record)) //do we have new data?
-        //     {
-        //         samplesTaken++;
-        //         max30102_getFIFOIR(&record);
-        //         max30102_nextSample(&record); //We're finished with this sample so move to next sample
-        //     }
-        // }
-
-        // uint64_t endTime = esp_timer_get_time();
-
-        // printf("samples[");
-        // printf("%d", samplesTaken);
-
-        // printf("] Hz[");
-        // printf("%.2f", (float)samplesTaken / ((endTime - startTime) / 1000000.0));
-        // printf("]");
-        // printf("---%llu---", startTime/ 1000);
-
-        // printf("\n");
     }
 }
 
@@ -179,30 +154,9 @@ void readINMP441Task(void* parameter) {
     size_t bytesRead = 0;
     char data_temp[8] = ""; 
 
-/*
-    while (1) {
-        vTaskDelay(1); // Feed for watchdog, if not watchdog timer will be triggered!
-
-        esp_err_t result = i2s_read(I2S_PORT, &sBuffer16, sizeof(sBuffer16), &bytesRead, portMAX_DELAY);
-        //printf("%d\n", bytesIn);
-        int sampleRead = bytesRead / 2;
-        if (result == ESP_OK) {
-            for (uint8_t i = 0; i < sampleRead; i += 1) {
-                // memset(data_temp, 0, sizeof(data_temp));
-                // sprintf(data_temp, "\n%d", sBuffer16[i]);
-                // strcat(data_inm, data_temp);
-                printf("%d %d %d\n", 3000, -3000, sBuffer16[i]);
-            }
-        }
-        // xRingbufferSend(buf_handle_inm, data_inm, sizeof(data_inm), pdMS_TO_TICKS(5));
-        // memset(data_inm, 0, sizeof(data_inm));
-    }
-*/
-
     while (1)
     {
         vTaskDelay(1); // Feed for watchdog, if not watchdog timer will be triggered!
-
         i2s_read(I2S_PORT, &buffer32, sizeof(buffer32), &bytesRead, 100);
         int samplesRead = bytesRead / 4;
 
@@ -219,20 +173,14 @@ void readINMP441Task(void* parameter) {
             
         }
         
-        xRingbufferSend(buf_handle_inm, data_inm, sizeof(data_inm), pdMS_TO_TICKS(5));
+        bool res = pdFALSE;
+        while (res != pdTRUE)
+        {
+            res = xRingbufferSend(buf_handle_inm, data_inm, sizeof(data_inm), pdMS_TO_TICKS(10));
+        }
         memset(data_inm, 0, sizeof(data_inm));
-        
     }
     
-
-    // while(1) 
-    // {
-    //     vTaskDelay(1);
-
-    //     i2s_read(I2S_PORT, &bufferTemp, sizeof(bufferTemp), &bytesRead, 100);
-
-    //     printf("----%d----\n", bufferTemp[3]);
-    // }
 }
 
 /**
@@ -241,32 +189,32 @@ void readINMP441Task(void* parameter) {
  * @param parameter 
  */
 void saveINMPAndMAXToSDTask(void *parameter) {
-  while(1) {
-    size_t item_size1;
-    size_t item_size2;
+    while(1) {
+        size_t item_size1;
+        size_t item_size2;
 
-    //Receive an item from no-split INMP441 ring buffer
-    char *item1 = (char *)xRingbufferReceive(buf_handle_inm, &item_size1, 1);
+        //Receive an item from no-split INMP441 ring buffer
+        char *item1 = (char *)xRingbufferReceive(buf_handle_inm, &item_size1, 1);
 
-    //Check received item
-    if (item1 != NULL) {
-      //Return Item
-      // Serial.println("r");
-      vRingbufferReturnItem(buf_handle_inm, (void *)item1);
-      sdcard_writeDataToFile("test", item1);
-    } 
+        //Check received item
+        if (item1 != NULL) {
+            //Return Item
+            // Serial.println("r");
+            vRingbufferReturnItem(buf_handle_inm, (void *)item1);
+            sdcard_writeDataToFile("pcg", item1);
+        } 
 
-    //Receive an item from no-split MAX30102 ring buffer
-    char *item2 = (char *)xRingbufferReceive(buf_handle_max, &item_size2, 1);
+        //Receive an item from no-split MAX30102 ring buffer
+        char *item2 = (char *)xRingbufferReceive(buf_handle_max, &item_size2, 1);
 
-    //Check received item
-    if (item2 != NULL) {
-      //Return Item
-      // Serial.println("rev");
-      vRingbufferReturnItem(buf_handle_max, (void *)item2);
-      sdcard_writeDataToFile("hello", item2);
-    } 
-  }
+        //Check received item
+        if (item2 != NULL) {
+            //Return Item
+            // Serial.println("rev");
+            vRingbufferReturnItem(buf_handle_max, (void *)item2);
+            sdcard_writeDataToFile("ppg", item2);
+        } 
+    }
 }
 
 void app_main(void)
@@ -282,17 +230,26 @@ void app_main(void)
     slot_config.host_id = host_t.slot;
 
     sdmmc_card_t SDCARD;
-    ESP_ERROR_CHECK_WITHOUT_ABORT(sdcard_initialize(&mount_config_t, &SDCARD, &host_t, &spi_bus_config_t, &slot_config));
+    ESP_ERROR_CHECK(sdcard_initialize(&mount_config_t, &SDCARD, &host_t, &spi_bus_config_t, &slot_config));
 
     // Initialise ring buffers
-    buf_handle_max = xRingbufferCreate(1028 * 3, RINGBUF_TYPE_NOSPLIT);
-    buf_handle_inm = xRingbufferCreate(1028 * 5, RINGBUF_TYPE_NOSPLIT);
+    buf_handle_max = xRingbufferCreate(1028 * 6, RINGBUF_TYPE_NOSPLIT);
+    buf_handle_inm = xRingbufferCreate(1028 * 15, RINGBUF_TYPE_NOSPLIT);
+
+    if(buf_handle_inm == NULL || buf_handle_max == NULL) 
+    {
+        ESP_LOGE(__func__, "Ring buffers create fail");
+    }
+    else
+    {
+        ESP_LOGI(__func__, "Ring buffers create OK");
+    }
 
     // Set up I2C
     ESP_ERROR_CHECK(i2cdev_init()); 
     
     // Create tasks
-    xTaskCreatePinnedToCore(max30102_test, "max30102_test", 1024 * 5, NULL, 6, NULL, 0);
-    xTaskCreatePinnedToCore(readINMP441Task, "readINM411", 1024 * 10, NULL, 3, NULL, 0);
-    xTaskCreatePinnedToCore(saveINMPAndMAXToSDTask, "saveToSD", 1024 * 5, NULL, 5, NULL, 1);
+    xTaskCreatePinnedToCore(max30102_test, "max30102_test", 1024 * 5, &readMAXTask_handle, 6, NULL, 0);
+    xTaskCreatePinnedToCore(readINMP441Task, "readINM411", 1024 * 15, &readINMTask_handle, 6, NULL, 0);  // ?? Make max30102 task and inm task have equal priority can make polling cycle of max3012 shorter ??
+    xTaskCreatePinnedToCore(saveINMPAndMAXToSDTask, "saveToSD", 1024 * 10, &saveToSDTask_handle, 10, NULL, 1);
 }
