@@ -37,7 +37,7 @@ RingbufHandle_t buf_handle_inm;
 
 // Data buffer to send to ringbuffer
 static char data_max[400] = "";
-static char data_inm[receiveBufferLen / 4 * 6] = "";
+static char data_inm[receiveBufferLen / 4 * 6] = ""; // Should not be to big. For some reason, I set its size 1536B and it fails ???
 
 TaskHandle_t readMAXTask_handle = NULL;
 TaskHandle_t readINMTask_handle = NULL;
@@ -201,7 +201,7 @@ void saveINMPAndMAXToSDTask(void *parameter) {
             //Return Item
             // Serial.println("r");
             vRingbufferReturnItem(buf_handle_inm, (void *)item1);
-            sdcard_writeDataToFile("pcg", item1);
+            sdcard_writeDataToFile_noArgument("pcg", item1);
         } 
 
         //Receive an item from no-split MAX30102 ring buffer
@@ -212,7 +212,7 @@ void saveINMPAndMAXToSDTask(void *parameter) {
             //Return Item
             // Serial.println("rev");
             vRingbufferReturnItem(buf_handle_max, (void *)item2);
-            sdcard_writeDataToFile("ppg", item2);
+            sdcard_writeDataToFile_noArgument("ppg", item2);
         } 
     }
 }

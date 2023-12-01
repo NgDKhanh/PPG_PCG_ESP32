@@ -101,7 +101,21 @@ esp_err_t sdcard_writeDataToFile(const char *nameFile, const char *format, ...);
  * @retval  - ESP_ERROR_SD_OPEN_FILE_FAILED on can't open file.
  * @retval  - ESP_ERROR_SD_READ_DATA_FAILED on fail to read data.
  */
-esp_err_t sdcard_readDataToFile(const char *nameFile, const char *format, ...);
+esp_err_t sdcard_readDataFromFile(const char *nameFile, const char *format, ...);
+
+/**
+ * @brief Write an array of char to SD card (no argument or format) using fwrite function
+ * @param nameFile Name of file
+ * @param data data to save to SD card
+ * 
+ * @return esp_err_t 
+ * 
+ * @retval  - ESP_OK on success.
+ * @retval  - ESP_FAIL on fail.
+ * @retval  - ESP_ERROR_SD_OPEN_FILE_FAILED on can't open file.
+ * @retval  - ESP_ERROR_SD_WRITE_DATA_FAILED on fail to read data.
+*/
+esp_err_t sdcard_writeDataToFile_noArgument(const char *nameFile, const char *data);
 
 
 /**

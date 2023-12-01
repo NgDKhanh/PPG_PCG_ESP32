@@ -137,6 +137,29 @@ esp_err_t sdcard_readDataFromFile(const char *nameFile, const char *format, ...)
     return ESP_OK;
 }
 
+esp_err_t sdcard_writeDataToFile_noArgument(const char *nameFile, const char *data)
+{
+    char pathFile[64];
+    sprintf(pathFile, "%s/%s.txt", mount_point, nameFile);
+
+    FILE *file = fopen(pathFile, "a+");
+    if (file == NULL)
+    {
+        ESP_LOGE(__func__, "Failed to open file for writing.");
+        return ESP_ERROR_SD_OPEN_FILE_FAILED;
+    }
+
+    int returnValue = 0;
+    returnValue = fprintf(file, "%s", data);
+    if (returnValue < 0)
+    {
+        ESP_LOGE(__func__, "Failed to write data to file %s.", pathFile);
+        return ESP_ERROR_SD_WRITE_DATA_FAILED;
+    }
+    fclose(file);
+    return ESP_OK;
+}
+
 esp_err_t sdcard_renameFile(const char *oldNameFile, char *newNameFile)
 {
     // Check if destination file exists before renaming
